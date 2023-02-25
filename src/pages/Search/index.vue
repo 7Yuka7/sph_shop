@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Search区域</h1>
+        <h1>Search区域:{{ $route.params.keyWords }}--{{ $route.query.keyWords }}</h1>
     </div>
 </template>
 

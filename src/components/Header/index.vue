@@ -30,6 +30,7 @@
         <!--头部第二行 搜索区域-->
         <div class="bottom">
             <h1 class="logoArea">
+                <!-- 将a标签修改成路由转跳router-link标签 -->
                 <router-link to="/home" >
                     <img src="./images/logo.png" alt="">
                 </router-link>
@@ -39,7 +40,8 @@
             </h1>
             <div class="searchArea">
                 <form action="###" class="searchForm">
-                    <input type="text" id="autocomplete" class="input-error input-xxlarge" />
+                    <!-- 使用v-model双向绑定获取输入框 -->
+                    <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyWords"/>
                     <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">搜索</button>
                 </form>
             </div>
@@ -50,10 +52,21 @@
 <script>
 export default {
     name: '',
+    data(){
+        return{
+            keyWords:''
+        }
+    },
     methods:{
         goSearch(){
             this.$router.push({
-                path:'/search'
+                name:'Search',
+                params:{
+                    keyWords:this.keyWords
+                },
+                query:{
+                    keyWords:this.keyWords
+                }
             })
         }
     }
