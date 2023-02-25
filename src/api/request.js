@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+//引入进度条及其样式
+import nprocess from 'nprogress';
+import 'nprogress/nprogress.css';
+
 //生成axios实例对象，并进行默认配置
 const requests = axios.create({
     baseURL:'/api',
@@ -10,7 +14,8 @@ const requests = axios.create({
 
 //设置请求拦截器，在请求发出去之间进行加工
 requests.interceptors.request.use((config)=>{
-    
+    //进度条启动
+    nprocess.start()
     //交出经过配置的请求体
     return config;
 })
@@ -18,7 +23,9 @@ requests.interceptors.request.use((config)=>{
 //设置响应拦截器，对返回响应进行操作
 requests.interceptors.response.use(
     (res)=>{
-
+        
+        //请求条结束
+        nprocess.done()
         //处理完数据后交出数据
         return res.data;
     },(err)=>{

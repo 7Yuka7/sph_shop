@@ -5,10 +5,13 @@ import App from './App.vue'
 import router from '@/router'
 
 //全局组件引入区域
-import TypeNav from '@/pages/Home/TypeNav'
+import TypeNav from '@/components/TypeNav'
 
 //注册全局组件
 Vue.component('TypeNav',TypeNav)
+
+//引入vuex仓库
+import store from '@/store'
 
 Vue.config.productionTip = false
 
@@ -19,5 +22,7 @@ Vue.config.productionTip = false
 new Vue({
   render: h => h(App),
   //挂载路由
-  router
+  router,
+  //挂载仓库
+  store
 }).$mount('#app')
