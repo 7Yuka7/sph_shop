@@ -12,6 +12,10 @@ Vue.component('TypeNav',TypeNav)
 
 Vue.config.productionTip = false
 
+// //发送ajax请求测试：
+// import {reqCategoryList} from '@/api'
+// reqCategoryList()
+
 new Vue({
   render: h => h(App),
   //挂载路由
