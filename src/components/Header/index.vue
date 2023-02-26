@@ -67,7 +67,6 @@ export default {
 
             if(this.$route.query){
                 location.query = this.$route.query
-                console.log('已整合')
             }
             //整合发送
             console.log(location)

@@ -1,5 +1,5 @@
 //注意是分别引入
-import {reqCategoryList} from '@/api'
+import {reqCategoryList,reqBannderList,reqFloorList} from '@/api'
 
 //home模块的vuex
 export default {
@@ -17,17 +17,48 @@ export default {
                 throw new Error('Failure')
             }
         },
+
+        //banner区域的数据请求
+        async bannerList(context,value){
+            let result = await reqBannderList()
+            if(result.code === 200){
+                context.commit('BANNERLIST',result.data)
+            }else{
+                throw new Error('Failure')
+            }
+        },
+
+        //floor区域的数据请求
+        async floorList(context,value){
+            let result = await reqFloorList()
+            if(result.code ===200){
+                context.commit('FLOORLIST',result.data)
+            }else{
+                throw new Error('Failure')
+            }
+        }
+
     },
 
     mutations:{
         CATEGORYLIST(state,value){
             state.categoryList = value.slice(0,16)
+        },
+        BANNERLIST(state,value){
+            state.bannerList = value
+        },
+        FLOORLIST(state,value){
+            state.floorList = value
         }
     },
 
     state:{
         //返回data是数组形式，此处的初始值也需要为数组形式
-        categoryList:[]
+        categoryList:[],
+
+        bannerList:[],
+
+        floorList:[]
     },
 
     getters:{

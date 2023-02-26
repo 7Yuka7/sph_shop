@@ -13,6 +13,12 @@ Vue.component('TypeNav',TypeNav)
 //引入vuex仓库
 import store from '@/store'
 
+//引入Mock数据模拟
+import '@/mock/MockServer.js'
+
+//引入轮播图需要的css
+import 'swiper/css/swiper.css'
+
 Vue.config.productionTip = false
 
 // //发送ajax请求测试：
