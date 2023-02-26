@@ -59,15 +59,26 @@ export default {
     },
     methods:{
         goSearch(){
-            this.$router.push({
-                name:'Search',
-                params:{
-                    keyWords:this.keyWords
-                },
-                query:{
-                    keyWords:this.keyWords
-                }
-            })
+            //同样的，此处要检查是否已经有分类导航的query参数，若有，则也需要携带
+            let location = {name:'Search'}
+            //注意关键词和路由处的占位符的对应
+            let params = {keyWord:this.keyWords || undefined}
+            location.params = params
+
+            if(this.$route.query){
+                location.query = this.$route.query
+                console.log('已整合')
+            }
+            //整合发送
+            console.log(location)
+            this.$router.push(location)
+
+            // this.$router.push({
+            //     name:'Search',
+            //     params:{
+            //         keyWords:this.keyWords
+            //     }
+            // })
         }
     }
 }

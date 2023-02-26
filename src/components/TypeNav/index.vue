@@ -2,9 +2,12 @@
     <div class="type-nav">
         <div class="container">
             <!-- 通过事件的委派，将导航条的高亮效果扩大到上方栏 -->
-            <div @mouseleave="currentIndex=-1">
+            <!-- 给其他页面的下拉栏显示取消效果加入鼠标移入移出事件 -->
+            <div @mouseleave="leaveDown" @mouseenter="showDown" class="tempContainer">
                 <h2 class="all">全部商品分类</h2>
-                <div class="sort">
+                <!-- 控制下拉栏的显示与否，并添加相应的显示动画 -->
+                <transition>
+                    <div class="sort" v-show="showDetail">
                     <!-- 路由的转跳事件也通过事件的委派至共同父元素，这样可以只生成一个点击事件，优化效率 -->
                     <div class="all-sort-list2" @click="goSearch">
                         <!-- 一级目录 -->
@@ -40,7 +43,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+                </transition>
+                
             </div>
 
             <nav class="nav">
@@ -71,6 +76,7 @@ export default {
         return {
             //通过当前索引和元素自身索引是否相同来控制背景高亮
             currentIndex: -1,
+            showDetail:true
         }
     },
 
@@ -80,8 +86,14 @@ export default {
     },
 
     //组件挂载完就去向vuex请求数据，在vuex中的actions中再去发送ajax请求
+    //向组件要数据的操作移至app组件挂载的时候，这样可以大幅度减少向服务器的请求次数
     mounted() {
-        this.$store.dispatch('home/categoryList')
+        // this.$store.dispatch('home/categoryList')
+        
+        //挂载的时候再进行当前页面的判断，只要不是home主页，三级联动下拉栏默认收起
+        if(this.$route.path !== '/home'){
+            this.showDetail = false
+        }
     },
 
     methods: {
@@ -99,6 +111,7 @@ export default {
             if(categoryname){
                 //基础转跳信息：
                 let location ={name:'Search'}
+                //query参数
                 let query={categoryName:categoryname}
 
                 //识别是几级目录,添加不同的id属性
@@ -111,8 +124,28 @@ export default {
                 }
 
                 //汇总信息，并转跳
+                //此处要检查搜索栏中有无已带的params参数，若有也要一同携带
+                if(this.$route.params){
+                    location.params = this.$route.params
+                }
                 location.query = query
                 this.$router.push(location)
+            }
+        },
+
+        //下拉框的鼠标移入事件
+        //此处从Home转跳时，如果鼠标未移动从false很快变为true，体验不够好
+        showDown(){
+            if(this.$route.path !== '/home'){
+                this.showDetail = true
+            }
+            
+        },
+        //下拉框的鼠标移出事件
+        leaveDown(){
+            this.currentIndex = -1
+            if(this.$route.path !== '/home'){
+                this.showDetail = false
             }
         }
     }
@@ -149,7 +182,20 @@ export default {
                 color: #333;
             }
         }
+        //临时容器用来加强动画效果的优先级
+        .tempContainer{
+        .v-enter{
+            height: 0px;
+        }
+        .v-enter-to{
+            height: 461px;
+        }
 
+        .v-enter-active{
+            transition: height .3s;
+        }
+
+        }
         .sort {
             position: absolute;
             left: 0;
@@ -159,6 +205,7 @@ export default {
             position: absolute;
             background: #fafafa;
             z-index: 999;
+
 
             .all-sort-list2 {
                 .item {
@@ -241,6 +288,8 @@ export default {
                 }
             }
         }
+
+        
     }
 }
 </style>
