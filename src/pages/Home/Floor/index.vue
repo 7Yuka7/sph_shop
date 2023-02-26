@@ -21,20 +21,8 @@
                             <img :src="datum.imgUrl" />
                         </div>
                         <div class="floorBanner">
-                            <div class="swiper-container" id="floor1Swiper">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide" v-for="item in datum.carouselList" :key="item.id">
-                                        <img :src="item.imgUrl">
-                                    </div>
-
-                                </div>
-                                <!-- 如果需要分页器 -->
-                                <div class="swiper-pagination"></div>
-
-                                <!-- 如果需要导航按钮 -->
-                                <div class="swiper-button-prev"></div>
-                                <div class="swiper-button-next"></div>
-                            </div>
+                            <!-- 轮播器组件 -->
+                            <Carousel :list="datum.carouselList"/>
                         </div>
                         <div class="split">
                             <span class="floor-x-line"></span>
@@ -65,30 +53,15 @@
 </template>
 
 <script>
-import Swiper from 'swiper';
+
 
 export default {
     name: 'Floor',
     mounted() {
         //由于floor组件需要复用，因此无法在此处向vuex要数据去发请求，需要到共同的HOME组件中去发
         //父组件再通过Props传数据给子组件,因此此处可以直接写轮播图
-        //等该组件挂载完毕，所有对应的结构都已就位
-        var mySwiper = new Swiper('.swiper-container', {
-            loop: true, // 循环模式选项
+        //等该组件挂载完毕，所有对应的结构都已就位 --轮播图已组件化
 
-            // 如果需要分页器
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true
-            },
-
-            // 如果需要前进后退按钮
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-
-        })
     },
     props: ['datum']
 }

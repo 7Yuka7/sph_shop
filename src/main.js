@@ -6,9 +6,12 @@ import router from '@/router'
 
 //全局组件引入区域
 import TypeNav from '@/components/TypeNav'
+import Carousel from '@/components/Carousel'
 
-//注册全局组件
-Vue.component('TypeNav',TypeNav)
+//注册全局组件---------------------
+Vue.component('TypeNav',TypeNav)//三级联动
+Vue.component('Carousel',Carousel)//轮播图
+
 
 //引入vuex仓库
 import store from '@/store'
