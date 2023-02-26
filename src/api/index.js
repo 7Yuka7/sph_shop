@@ -32,3 +32,13 @@ export const reqFloorList = () =>{
         method:'get'
     })
 }
+
+//search接口
+export const reqSearch = (params)=>{
+
+    return requests({
+        url:'/list',
+        method:'post',
+        data:params
+    })
+}
