@@ -41,7 +41,7 @@
             <div class="searchArea">
                 <form action="###" class="searchForm">
                     <!-- 使用v-model双向绑定获取输入框 -->
-                    <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyWords"/>
+                    <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyWord"/>
                     <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">搜索</button>
                 </form>
             </div>
@@ -54,7 +54,7 @@ export default {
     name: '',
     data(){
         return{
-            keyWords:''
+            keyWord:''
         }
     },
     methods:{
@@ -62,7 +62,7 @@ export default {
             //同样的，此处要检查是否已经有分类导航的query参数，若有，则也需要携带
             let location = {name:'Search'}
             //注意关键词和路由处的占位符的对应
-            let params = {keyWord:this.keyWords || undefined}
+            let params = {keyword:this.keyWord || undefined}
             location.params = params
 
             if(this.$route.query){
