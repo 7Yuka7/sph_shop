@@ -30,25 +30,15 @@
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
+
+            <!-- 排序操作 -->
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isActive}" @click="changeSort('1')">
+                  <a >综合 <span class="iconfont" :class="{'icon-todown':isDesc,'icon-up':isAsc}" v-show="isActive"></span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active:!isActive}" @click="changeSort('2')">
+                  <a >价格 <span class="iconfont" :class="{'icon-todown':isDesc,'icon-up':isAsc}" v-show="!isActive"></span></a>
                 </li>
               </ul>
             </div>
@@ -58,7 +48,7 @@
               <li class="yui3-u-1-5" v-for="good in goodsList" :key="good.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"><img :src="good.defaultImg" /></a>
+                    <a href=""><img :src="good.defaultImg" /></a>
                   </div>
                   <div class="price">
                     <strong>
@@ -81,35 +71,8 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <!-- 分页器 -->
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPage="getPage"/>
         </div>
       </div>
     </div>
@@ -132,7 +95,7 @@ export default {
         "category3Id": "",
         "categoryName": "",
         "keyword": "",
-        "order": "",
+        "order": "1:desc",
         "pageNo": 1,
         "pageSize": 10,
         "props": [],
@@ -151,14 +114,24 @@ export default {
     this.getData()
   },
   computed: {
-    ...mapGetters('search', ['goodsList'])
+    ...mapGetters('search', ['goodsList','total']),
+    //计算上下箭头和active类的显示
+    isActive(){
+      return this.searchParams.order.indexOf('1') !== -1
+    },
+    //箭头有上下，因此需要有两个
+    isDesc(){
+      return this.searchParams.order.includes('desc')
+    },
+    isAsc(){
+      return this.searchParams.order.includes('asc')
+    }
   },
 
   //搜索时间，在search的再次点击事件，都要重新获取不同的数据
   methods: {
     //获取数据方法
     getData() {
-      console.log('-----',this.searchParams.props)
       this.$store.dispatch('search/getSearchData', this.searchParams)
       // console.log('专挑了')
     },
@@ -225,6 +198,32 @@ export default {
     removeProps(index){
       this.searchParams.props.splice(index,1)
       this.getData()
+    },
+
+    //排序
+    changeSort(flag){
+      //首先获取当前的分类以及排序
+      let orginCategory = this.searchParams.order.split(':')[0]
+      let orginOrder = this.searchParams.order.split(':')[1]
+      let newOrder = ''
+      if (orginCategory === flag){
+        //说明当前点击的和当前分类的active是同一个,直接改变排序方式即可
+        newOrder = `${orginCategory}:${orginOrder==='desc'? 'asc':'desc'}`
+      }else{
+        //进入此处，说明切换了分类，默认排序都是降序的
+        newOrder = `${flag}:desc`
+      }
+      //替换原先的值，并发送请求
+      this.searchParams.order = newOrder
+      this.getData()
+    },
+
+    //点击页面的自定义事件
+    getPage(page){
+      // console.log(page)
+      //接收到的参数整合，并进行转跳
+      this.searchParams.pageNo = page
+      this.getData()
     }
   },
 
@@ -243,11 +242,11 @@ export default {
       this.getData()
     }
   },
-
   beforeDestroy(){
     //自定义事件的解绑
     this.$off('getTradeMark')
-  }
+  },
+  //
 }
 </script>
 

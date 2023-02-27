@@ -40,6 +40,9 @@ export default {
         },
         trademarkList(state){
             return state.searchData.trademarkList
+        },
+        total(state){
+            return state.searchData.total
         }
     }
 }

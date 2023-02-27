@@ -7,10 +7,12 @@ import router from '@/router'
 //全局组件引入区域
 import TypeNav from '@/components/TypeNav'
 import Carousel from '@/components/Carousel'
+import Pagination from '@/components/Pagination'
 
 //注册全局组件---------------------
 Vue.component('TypeNav',TypeNav)//三级联动
 Vue.component('Carousel',Carousel)//轮播图
+Vue.component('Pagination',Pagination)//分页器
 
 
 //引入vuex仓库
