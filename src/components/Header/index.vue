@@ -79,6 +79,16 @@ export default {
             //     }
             // })
         }
+    },
+    //在组件挂载的时候就加载监听全局事件总线
+    mounted(){
+        this.$bus.$on('removeKeyword',()=>{
+            this.keyWord = ''
+        })
+    },
+    //销毁组件之间取消对该事件的监听
+    beforeDestroy(){
+        this.$off('removeKeyword')
     }
 }
 </script>

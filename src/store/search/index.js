@@ -5,9 +5,10 @@ export default {
     namespaced:true,
     
     actions:{
-        //默认传入的就是空对象，至少为空对象才会返回值
+        //默认传入的就是空对象，至少为空对象才会返回值，默认值即为空对象
         async getSearchData(context,value={}){
             try{
+                //发送请求使用await直接返回结果而不是Promise对象
                 let result = await reqSearch(value)
                 if(result.code === 200){
                     context.commit('GETSEARCHDATA',result.data)

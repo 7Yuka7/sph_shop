@@ -10,16 +10,22 @@
               <a href="#">全部结果</a>
             </li>
           </ul>
+          <!-- 面包屑 -->
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 判断参数中是否有分类名再动态的展示有无面包屑，后面的x是面包屑的移除事件 -->
+            <li class="with-x" v-if="searchParams.categoryName">{{ searchParams.categoryName }}<i @click="removeBread">×</i>
+            </li>
+            <!-- 关键词的面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">{{ searchParams.keyword }}<i @click="removeKeyword">×</i></li>
+            <!-- 品牌的面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">{{ searchParams.trademark.split(':')[1] }}<i @click="removetrademark">×</i></li>
+            <!-- 商品属性的面包屑 -->
+            <li class="with-x" v-for="(item,index) in searchParams.props" :key="index">{{ item.split(':')[1]}}<i @click="removeProps(index)">×</i></li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @getTradeMark="getTradeMark" @getGoodsDetail="getGoodsDetail"/>
 
         <!--details-->
         <div class="details clearfix">
@@ -61,8 +67,8 @@
                     </strong>
                   </div>
                   <div class="attr">
-                    <a target="_blank" href="item.html"
-                      title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】">{{ good.title }}</a>
+                    <a target="_blank" href="item.html" title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】">{{ good.title
+                    }}</a>
                   </div>
                   <div class="commit">
                     <i class="command">已有<span>2000</span>人评价</i>
@@ -138,7 +144,7 @@ export default {
   components: { SearchSelector },
   //在挂载之间收集搜索信息--包括三级联通和搜索栏中的query和params参数
   beforeMount() {
-    this.searchParams = {...this.searchParams,...this.$route.query,...this.$route.params}
+    this.searchParams = { ...this.searchParams, ...this.$route.query, ...this.$route.params }
   },
   mounted() {
     //挂载完成的时候就请求数据
@@ -147,11 +153,100 @@ export default {
   computed: {
     ...mapGetters('search', ['goodsList'])
   },
+
   //搜索时间，在search的再次点击事件，都要重新获取不同的数据
-  methods:{
-    getData(){
-      this.$store.dispatch('search/getSearchData',this.searchParams)
+  methods: {
+    //获取数据方法
+    getData() {
+      console.log('-----',this.searchParams.props)
+      this.$store.dispatch('search/getSearchData', this.searchParams)
+      // console.log('专挑了')
     },
+
+    // 移除类名面包屑
+    removeBread() {
+      //移除面包屑首先就是要重新进行搜索,因此也需要清空原有的信息残留，
+      this.searchParams.category1Id = undefined
+      this.searchParams.category2Id = undefined
+      this.searchParams.category3Id = undefined
+      this.searchParams.categoryName = undefined
+      //用splice方法使得vue可以监测到，跳转之前清空商品属性
+      this.searchParams.props.splice(0,this.searchParams.props.length)
+
+      //随后要url地址栏的重新清空(如果面包屑全部被删除)--路由的变化又会使得参数的重新请求(等会调整)
+      //若是此时仍带有params参数，则仍需要将其带上,空串就用undefined
+
+      this.$router.push({
+        name: 'Search',
+        params: this.$route.params || undefined
+      })
+    },
+
+    //移除关键词面包屑--并清除兄弟组件Hearder中搜索栏的关键词
+    removeKeyword() {
+      //清除本地关键词
+      this.searchParams.keyword = undefined
+      //清除兄弟组件关键词
+      this.$bus.$emit('removeKeyword')
+      //转跳到自身
+      this.$router.push({
+        name: 'Search',
+        query: this.$route.query || undefined
+      })
+    },
+
+    //自定义事件响应----品牌
+    getTradeMark(value){
+      //对数据进行处理 id:pingpai
+      this.searchParams.trademark = `${value.tmId}:${value.tmName}`
+      //再次发送请求,这里由于不会修改地址栏，因此需要主动转跳--watch监视的是$route
+
+      this.getData()
+    },
+    //品牌面包屑的移除
+    removetrademark(){
+      //移除并重新转跳
+      this.searchParams.trademark = undefined
+      this.getData()
+    },
+
+    //自定义响应事件---商品属性
+    getGoodsDetail(props){
+      //判断属性是否已存在
+      if(this.searchParams.props.indexOf(props) ===-1){
+        //表示数组中还没有
+        this.searchParams.props.push(props)
+        //更新页面
+        this.getData()
+      }
+      
+    },
+    //移除事件
+    removeProps(index){
+      this.searchParams.props.splice(index,1)
+      this.getData()
+    }
+  },
+
+  //route路由变化的时候就需要重新发送请求，获取当前的搜索值
+  watch: {
+    $route() {
+      //由于没有清空机制，会重复将上次请求的一些信息残留，因此除了第一次，每次发送请求之间都要对数据进行归零
+      this.searchParams.category1Id = undefined
+      this.searchParams.category2Id = undefined
+      this.searchParams.category3Id = undefined
+      //用splice方法使得vue可以监测到，跳转之前清空商品属性
+      this.searchParams.props.splice(0,this.searchParams.props.length)
+
+      //发送数据之前，要将当前最先的数据带给服务器
+      Object.assign(this.searchParams, this.$route.query, this.$route.params)
+      this.getData()
+    }
+  },
+
+  beforeDestroy(){
+    //自定义事件的解绑
+    this.$off('getTradeMark')
   }
 }
 </script>

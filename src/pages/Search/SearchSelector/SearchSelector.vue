@@ -3,9 +3,10 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
+        <!-- 品牌区域 -->
         <ul class="logo-list">
 
-          <li v-for="item in trademarkList" :key="item.tmId">{{item.tmName}}</li>
+          <li v-for="item in trademarkList" :key="item.tmId" @click="showTradeMark(item)">{{item.tmName}}</li>
 
         </ul>
       </div>
@@ -14,13 +15,15 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
-
+    <!-- 平台售卖属性 -->
     <div class="type-wrap" v-for="item in attrsList" :key="item.attrId">
+      <!-- 属性名字 -->
       <div class="fl key">{{item.attrName}}</div>
       <div class="fl value">
+        <!-- 属性具体参数 -->
         <ul class="type-list">
-
-          <li v-for="target in item.attrValueList" :key="index">
+          <!-- 也是通过自定义事件传递参数 -->
+          <li v-for="(target,index) in item.attrValueList" :key="index" @click="goodsDetail(item,target)">
             <a>{{target}}</a>
           </li>
 
@@ -38,6 +41,19 @@
     name: 'SearchSelector',
     computed:{
       ...mapGetters('search',['attrsList','trademarkList'])
+    },
+    methods:{
+      //点击品牌触发父组件中的自定义事件
+      showTradeMark(value){
+        this.$emit('getTradeMark',value)
+      },
+      //商品参数的自定义事件
+      goodsDetail(item,target){
+        // 商品属性的数组: ["属性ID:属性值:属性名"]
+        let props = `${item.attrId}:${target}:${item.attrName}`
+        //触发自定义事件
+        this.$emit('getGoodsDetail',props)
+      }
     }
   }
 </script>

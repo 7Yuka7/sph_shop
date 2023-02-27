@@ -30,6 +30,10 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
+  //全局事件总线
+  beforeCreate(){
+    Vue.prototype.$bus = this
+  },
   //挂载路由
   router,
   //挂载仓库
