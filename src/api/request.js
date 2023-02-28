@@ -20,7 +20,7 @@ requests.interceptors.request.use((config)=>{
     //进度条启动
     nprocess.start()
 
-    //设置请求头
+    //设置请求头-游客的uuid
     if(store.state.detail.uuid_token){
         config.headers.userTempId = store.state.detail.uuid_token
     }
