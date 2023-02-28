@@ -66,3 +66,11 @@ export const reqShopCart = () =>{
         method:'get'
     })
 }
+
+//删除购物车商品接口
+export const reqDeleteCartItem = (skuId) =>{
+    return requests({
+        url:`/cart/deleteCart/${skuId}`,
+        method:'delete'
+    })
+}
