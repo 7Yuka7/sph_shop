@@ -71,14 +71,17 @@
               </dl>
             </div>
 
+            <!-- 购物车事件 -->
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt">
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <!-- 如果用户自己输入内容，则要进行审查 -->
+                <input autocomplete="off" class="itxt" v-model="cartNum" @change="changecartNum">
+                <!-- 加减数量的点击事件 -->
+                <a href="javascript:" class="plus" @click="cartNum++">+</a>
+                <a href="javascript:" class="mins" @click="cartNum>1?cartNum--:cartNum=1">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a @click="addShopCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -336,6 +339,11 @@
 
   export default {
     name: 'Detail',
+    data(){
+      return{
+        cartNum:1
+      }
+    },
     components: {ImageList,Zoom},
     computed:{
       ...mapGetters('detail',['categoryView','skuInfo','skuImageList','spuSaleAttrList']),
@@ -354,6 +362,36 @@
 
         //再给点击的事件加上
         prop.isChecked = '1'
+      },
+      //用户输入框中修改商品数量
+      changecartNum(event){
+        let value = event.target.value * 1
+        //用户输入的为非数字，或者值小于1的非正常情况下，直接赋值为1
+        if(isNaN(value) || value <1){
+          this.cartNum = 1
+        }else{
+          //还得防止用户输入的是小数
+          this.cartNum = parseInt(value)
+        }
+      },
+      //添加至购物车
+      async addShopCart(){
+        // 发送请求，将商品加入到数据库中
+        try {
+          //加入购物车成功
+          await this.$store.dispatch('detail/addOrModifyCart',{skuId:this.$route.params.skuId,skuNum:this.cartNum})
+          //将本次的购物商品信息存储在session中
+          sessionStorage.setItem('SKUINFO',JSON.stringify(this.skuInfo))
+          //接下来进行路由跳转
+          this.$router.push({
+            name:'addcartsuccess',
+            query:{skuNum:this.cartNum}
+          })
+          
+        } catch (error) {
+          alert(error.message)
+        }
+        
       }
     },
     mounted(){

@@ -4,6 +4,9 @@ import axios from 'axios';
 import nprocess from 'nprogress';
 import 'nprogress/nprogress.css';
 
+//引入仓库
+import store from '@/store'
+
 //生成axios实例对象，并进行默认配置
 const requests = axios.create({
     baseURL:'/api',
@@ -16,6 +19,12 @@ const requests = axios.create({
 requests.interceptors.request.use((config)=>{
     //进度条启动
     nprocess.start()
+
+    //设置请求头
+    if(store.state.detail.uuid_token){
+        config.headers.userTempId = store.state.detail.uuid_token
+    }
+
     //交出经过配置的请求体
     return config;
 })

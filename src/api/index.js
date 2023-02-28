@@ -50,3 +50,19 @@ export const reqDeatil = (skuId)=>{
         method:'get',
     })
 }
+
+//添加或改动购物车接口
+export const reqAddOrModifyCart = (skuId,skuNum) => {
+    return requests({
+        url:`/cart/addToCart/${skuId}/${skuNum}`,
+        method:'post'
+    })
+}
+
+//请求购物车数据接口
+export const reqShopCart = () =>{
+    return requests({
+        url:'/cart/cartList',
+        method:'get'
+    })
+}

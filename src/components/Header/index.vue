@@ -69,7 +69,6 @@ export default {
                 location.query = this.$route.query
             }
             //整合发送
-            console.log(location)
             this.$router.push(location)
 
             // this.$router.push({
