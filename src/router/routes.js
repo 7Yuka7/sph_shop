@@ -8,7 +8,7 @@ import Detail from '@/pages/Detail'
 
 export default [
     {
-        path:'/detail/:goodsId',
+        path:'/detail/:skuId',
         component:Detail,
         meta:{showFooter:true}
     },

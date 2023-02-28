@@ -42,3 +42,11 @@ export const reqSearch = (params)=>{
         data:params
     })
 }
+
+//获取商品详情的接口
+export const reqDeatil = (skuId)=>{
+    return requests({
+        url:`/item/${skuId}`,
+        method:'get',
+    })
+}

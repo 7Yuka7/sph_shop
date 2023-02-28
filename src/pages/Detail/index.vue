@@ -7,31 +7,30 @@
     <section class="con">
       <!-- 导航路径区域 -->
       <div class="conPoin">
-        <span>手机、数码、通讯</span>
-        <span>手机</span>
-        <span>Apple苹果</span>
-        <span>iphone 6S系类</span>
+        <span v-show="categoryView.category1Id">{{categoryView.category1Name}}</span>
+        <span v-show="categoryView.category2Id">{{categoryView.category2Name}}</span>
+        <span v-show="categoryView.category3Id">{{categoryView.category3Name}}</span>
       </div>
       <!-- 主要内容区域 -->
       <div class="mainCon">
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom />
+          <Zoom :skuImageList="skuImageList"/>
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList :skuImageList="skuImageList"/>
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
           <div class="goodsDetail">
-            <h3 class="InfoName">Apple iPhone 6s（A1700）64G玫瑰金色 移动通信电信4G手机</h3>
-            <p class="news">推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返</p>
+            <h3 class="InfoName">{{skuInfo.skuName}}</h3>
+            <p class="news">{{skuInfo.skuDesc}}</p>
             <div class="priceArea">
               <div class="priceArea1">
                 <div class="title">价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;格</div>
                 <div class="price">
                   <i>¥</i>
-                  <em>5299</em>
+                  <em>{{skuInfo.price}}</em>
                   <span>降价通知</span>
                 </div>
                 <div class="remark">
@@ -63,32 +62,15 @@
 
           <div class="choose">
             <div class="chooseArea">
+              <!-- 遍历属性区域 -->
               <div class="choosed"></div>
-              <dl>
-                <dt class="title">选择颜色</dt>
-                <dd changepirce="0" class="active">金色</dd>
-                <dd changepirce="40">银色</dd>
-                <dd changepirce="90">黑色</dd>
-              </dl>
-              <dl>
-                <dt class="title">内存容量</dt>
-                <dd changepirce="0" class="active">16G</dd>
-                <dd changepirce="300">64G</dd>
-                <dd changepirce="900">128G</dd>
-                <dd changepirce="1300">256G</dd>
-              </dl>
-              <dl>
-                <dt class="title">选择版本</dt>
-                <dd changepirce="0" class="active">公开版</dd>
-                <dd changepirce="-1000">移动版</dd>
-              </dl>
-              <dl>
-                <dt class="title">购买方式</dt>
-                <dd changepirce="0" class="active">官方标配</dd>
-                <dd changepirce="-240">优惠移动版</dd>
-                <dd changepirce="-390">电信优惠版</dd>
+              <dl v-for="item in spuSaleAttrList" :key="item.id">
+                <dt class="title">{{item.saleAttrName}}</dt>
+                <!-- 属性的排他点击事件 -->
+                <dd changepirce="0" :class="{active:prop.isChecked === '1'}" v-for="prop in item.spuSaleAttrValueList" :key="prop.id" @click="changeChecked(prop,item.spuSaleAttrValueList)">{{prop.saleAttrValueName}}</dd>
               </dl>
             </div>
+
             <div class="cartWrap">
               <div class="controls">
                 <input autocomplete="off" class="itxt">
@@ -350,12 +332,33 @@
   import ImageList from './ImageList/ImageList'
   import Zoom from './Zoom/Zoom'
 
+  import { mapGetters } from 'vuex';
+
   export default {
     name: 'Detail',
-    
-    components: {
-      ImageList,
-      Zoom
+    components: {ImageList,Zoom},
+    computed:{
+      ...mapGetters('detail',['categoryView','skuInfo','skuImageList','spuSaleAttrList']),
+      //优化传输给放大镜区域的数据，至少传递一个空数组里面包裹了一个对象
+      //由于网络等问题，放大镜组件加载的时候，还没有数据，undefined.imgUrl就会警告 而空数组中的对象.imgUrl只是undefined，不显示但不会警告
+      skuImageList(){
+        return this.skuInfo.skuImageList || []
+      }
+    },
+    methods:{
+      // 排他效果
+      changeChecked(prop,list){
+        // 基本思路就是先取消当前列所有属性的高亮效果，后再给点击的属性加上高亮效果即可
+        //遍历当前数组，isChecked都变为0
+        list.forEach((item)=>{item.isChecked = '0'})
+
+        //再给点击的事件加上
+        prop.isChecked = '1'
+      }
+    },
+    mounted(){
+      //挂载的时候就发送请求数据
+      this.$store.dispatch('detail/getItemInfo',this.$route.params.skuId)
     }
   }
 </script>
