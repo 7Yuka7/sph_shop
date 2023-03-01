@@ -74,3 +74,11 @@ export const reqDeleteCartItem = (skuId) =>{
         method:'delete'
     })
 }
+
+//商品勾选状态接口
+export const reqModifyChecked = (skuID,isChecked) =>{
+    return requests({
+        url:`/cart/checkCart/${skuID}/${isChecked}`,
+        method:'get'
+    })
+}

@@ -13,9 +13,11 @@
       <!-- 购物车区域 -->
       <div class="cart-body">
         <ul class="cart-list" v-for="item in cartInfoList" :key="item.id">
+          <!-- 改变商品的勾选状态 -->
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" :checked="item.isChecked===1">
+            <input type="checkbox" name="chk_list" :checked="item.isChecked===1" @change="changeChecked(item,$event)">
           </li>
+
           <li class="cart-list-con2">
             <img :src="item.imgUrl">
             <div class="item-msg">{{item.skuName}}</div>
@@ -36,9 +38,9 @@
           </li>
           <!-- 删除商品 -->
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet" @click="removeItem(item)">删除</a>
+            <a href="javascript:;" class="sindelet" @click="removeItem(item)">删除</a>
             <br>
-            <a href="#none">移到收藏</a>
+            <a href="javascript:;">移到收藏</a>
           </li>
         </ul>
 
@@ -46,13 +48,15 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" :checked="isAllChecked">
+        <!-- 全选按钮事件,且若数组没有数据全选按钮也取消 -->
+        <input class="chooseAll" type="checkbox" :checked="isAllChecked&&cartInfoList.length>0" @click="changeAllChecked">
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
-        <a href="#none">移到我的关注</a>
-        <a href="#none">清除下柜商品</a>
+        <!-- 删除按钮事件 -->
+        <a href="javascript:;" @click="removeAllChecked">删除选中的商品</a>
+        <a href="javascript:;">移到我的关注</a>
+        <a href="javascript:;">清除下柜商品</a>
       </div>
       <div class="money-box">
         <div class="chosed">已选择
@@ -79,6 +83,7 @@
         //请求数据
         this.$store.dispatch('shopCart/getShopCart')
       },
+
       //处理购物车商品加减--节流
       changeNum:throttle(function(type,disNum,item){
         console.log(type,disNum,item)
@@ -119,8 +124,39 @@
         } catch (error) {
           alert(error.message)
         }
-      }
+      },
 
+      //修改商品的checked
+      async changeChecked(cart,event){
+        //派发
+        try {
+          await this.$store.dispatch('shopCart/modifyChecked',{skuID:cart.skuId,isChecked:event.target.checked?'1':'0'})
+          this.getData()
+        } catch (error) {
+          alert(error.message)
+        }
+      },
+
+      //删除所有的商品--由于不再v-for中，因此不能拿到相关选中的信息，因此直接去仓库中执行逻辑
+      async removeAllChecked(){
+        try {
+          //等待结果返回，如果没报错就会重载页面
+          await this.$store.dispatch('shopCart/removeAllChecked')
+          this.getData()
+        } catch (error) {
+          alert(error.message)
+        }
+      },
+
+      //商品的全选与全不选--传入的是当前全选按钮是勾选状态与否
+      async changeAllChecked(event){
+        try {
+          await this.$store.dispatch('shopCart/changeAllChecked',event.target.checked)
+          this.getData()
+        } catch (error) {
+          alert(error.message)
+        }
+      }
     },
     computed:{
       ...mapGetters('shopCart',['cartList']),
