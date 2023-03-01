@@ -49,7 +49,6 @@ const router = new VueRouter({
 router.beforeEach(async (to,from,next)=>{
     // 数据都从仓库中取，因此要引入store
     // 检查token判断用户是否登录
-    console.log(store)
     let token = store.state.registerAndLogin.token
     //是否已携带用户信息--注意，此处不能直接判断userInfo，因为空对象的布尔值也是true
     let name = store.state.registerAndLogin.userInfo.name

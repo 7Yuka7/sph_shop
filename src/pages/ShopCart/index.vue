@@ -66,7 +66,7 @@
           <i class="summoney">{{totalPrice}}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <router-link class="sum-btn" to="/trade">结算</router-link>
         </div>
       </div>
     </div>
@@ -160,10 +160,12 @@
     },
     computed:{
       ...mapGetters('shopCart',['cartList']),
+
       //真正的购物车数据--这个结构嵌套层次太多
       cartInfoList(){
-        return this.cartList.cartInfoList || []
+        return this.cartList.cartInfoList
       },
+
       //总共商品价格--未变
       totalPrice(){
         let sum = 0
