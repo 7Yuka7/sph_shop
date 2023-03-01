@@ -124,3 +124,19 @@ export const reqLogOut = () => {
         method:'get'
     })
 }
+
+//获取用户地址信息接口
+export const reqAddressInfo = () => {
+    return requests({
+        url:'/user/userAddress/auth/findUserAddressList',
+        method:'get'
+    })
+}
+
+//获取订单交易页信息接口
+export const reqTradeInfo = () => {
+    return requests({
+        url:'/order/auth/trade',
+        method:'get'
+    })
+}

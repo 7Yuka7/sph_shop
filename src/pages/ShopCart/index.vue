@@ -163,7 +163,7 @@
 
       //真正的购物车数据--这个结构嵌套层次太多
       cartInfoList(){
-        return this.cartList.cartInfoList
+        return this.cartList.cartInfoList || []
       },
 
       //总共商品价格--未变
