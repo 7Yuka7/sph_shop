@@ -26,6 +26,9 @@
         mounted(){
             //发送请求，获取的数据传递给Floor子组件
             this.$store.dispatch('home/floorList')
+            
+            //挂载的时候，请求用户的信息--不再使用，由路由守卫统一派发
+            // this.$store.dispatch('registerAndLogin/getUserInfo')
         },
         computed:{
             ...mapState('home',['floorList'])

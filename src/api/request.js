@@ -24,7 +24,10 @@ requests.interceptors.request.use((config)=>{
     if(store.state.detail.uuid_token){
         config.headers.userTempId = store.state.detail.uuid_token
     }
-
+    //如果带有token，则在请求头中加入
+    if(store.state.registerAndLogin.token){
+        config.headers.token = store.state.registerAndLogin.token
+    }
     //交出经过配置的请求体
     return config;
 })

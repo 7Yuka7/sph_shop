@@ -8,31 +8,32 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号">
+        <input type="text" placeholder="请输入你的手机号" v-model="phone">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码">
-        <img ref="code" src="http://182.92.128.115/api/user/passport/code" alt="code">
+        <input type="text" placeholder="请输入验证码" v-model="codeLocal">
+        <button style="width:100px;height:38px;marginLeft:5px" @click="getCode(phone)">发送验证码</button>
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码">
+        <input type="password" placeholder="请输入你的登录密码" v-model="password">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码">
+        <input type="password" placeholder="请输入确认密码" v-model="passwordCheck">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="controls">
-        <input name="m1" type="checkbox">
+        <input name="m1" type="checkbox" :checked="boxCheck">
         <span>同意协议并注册《尚品汇用户协议》</span>
         <span class="error-msg">错误提示信息</span>
       </div>
-      <div class="btn">
+      <!-- 点击完成注册1.向服务器发送注册数据 2.转跳页面 -->
+      <div class="btn" @click="registerOperate">
         <button>完成注册</button>
       </div>
     </div>
@@ -57,8 +58,47 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   export default {
-    name: 'Register'
+    name: 'Register',
+    data(){
+      return{
+        phone:'',
+        codeLocal:'',
+        password:'',
+        passwordCheck:'',
+        boxCheck:true
+      }
+    },
+    computed:{
+      ...mapState('registerAndLogin',['code'])
+    },
+    methods:{
+      //获取验证码
+      async getCode(){
+        try {
+          //首先phone不能为空
+          this.phone&&await this.$store.dispatch('registerAndLogin/getCode',this.phone)
+          //生成后直接键入
+          this.codeLocal = this.code
+        } catch (error) {
+          alert(error.message)
+        }
+      },
+
+      //注册
+      async registerOperate(){
+        try {
+          // 简单判断-当有值、重复输入密码相同且勾选了协议后再派发请求
+          (this.phone&&this.code&&this.password === this.passwordCheck&&this.boxCheck) && await this.$store.dispatch('registerAndLogin/Register',{phone:this.phone,code:this.code,password:this.password})
+          //当返回没错时，进行转跳
+          this.$router.push('/login')
+        } catch (error) {
+          alert(error.message)
+        }
+
+      }
+    }
   }
 </script>
 

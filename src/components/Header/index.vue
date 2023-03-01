@@ -5,15 +5,20 @@
             <div class="container">
                 <div class="loginList">
                     <p>尚品汇欢迎您！</p>
-                    <p>
+
+                    <!-- 根据用户的登录与否，显示不同的页面 -->
+                    <p v-if="!userInfo.name">
                         <span>请</span>
                         <!-- 注册完路由，使用声明式导航跳转路由 -->
                         <router-link to="/login">登录</router-link>
                         <router-link to="/register" class="register">免费注册</router-link>
-
-                        <!-- <a href="###">登录</a>
-                        <a href="###" class="register">免费注册</a> -->
                     </p>
+                    <!-- 登录显示 -->
+                    <p v-else>
+                        <a>{{ userInfo.name }}</a>
+                        <a class="register" @click="logOut">退出登录</a>
+                    </p>
+
                 </div>
                 <div class="typeList">
                     <a href="###">我的订单</a>
@@ -50,6 +55,7 @@
 </template>
 
 <script>
+
 export default {
     name: '',
     data(){
@@ -57,7 +63,14 @@ export default {
             keyWord:''
         }
     },
+    computed:{
+        //读取用户的信息
+        userInfo(){
+            return this.$store.state.registerAndLogin.userInfo
+        }
+    },
     methods:{
+        //进行搜索事件
         goSearch(){
             //同样的，此处要检查是否已经有分类导航的query参数，若有，则也需要携带
             let location = {name:'Search'}
@@ -70,13 +83,17 @@ export default {
             }
             //整合发送
             this.$router.push(location)
+        },
 
-            // this.$router.push({
-            //     name:'Search',
-            //     params:{
-            //         keyWords:this.keyWords
-            //     }
-            // })
+        //退出登录
+        async logOut(){
+            try {
+                await this.$store.dispatch('registerAndLogin/logOut')
+                //退出登录后要转跳到主页
+                this.$router.push('/home')
+            } catch (error) {
+                alert(error.message)
+            }
         }
     },
     //在组件挂载的时候就加载监听全局事件总线

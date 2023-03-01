@@ -82,3 +82,45 @@ export const reqModifyChecked = (skuID,isChecked) =>{
         method:'get'
     })
 }
+
+//验证码接收路由接口
+export const reqGetCode = (phone) => {
+    return requests({
+        url:`/user/passport/sendCode/${phone}`,
+        method:'get'
+    })
+}
+
+//注册发送数据接口
+export const reqRegister = ({phone,password,code}) => {
+    return requests({
+        url:`/user/passport/register`,
+        method:'post',
+        data:{phone,password,code}
+    })
+}
+
+//用户登录接口
+export const reqLogin = ({phone,password}) => {
+    return requests({
+        url:'/user/passport/login',
+        method:'post',
+        data:{phone,password}
+    })
+}
+
+//获取用户登录信息接口
+export const reqUserInfo = () =>{
+    return requests({
+        url:'/user/passport/auth/getUserInfo',
+        method:'get'
+    })
+}
+
+//退出登录接口
+export const reqLogOut = () => {
+    return requests({
+        url:'/user/passport/logout',
+        method:'get'
+    })
+}
