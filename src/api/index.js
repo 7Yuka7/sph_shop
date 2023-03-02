@@ -173,3 +173,11 @@ export const reqPaymentStatus = (orderId) => {
         method:'get'
     })
 }
+
+//个人中心获取订单信息
+export const reqOrderList = (page,limit) => {
+    return requests({
+        url:`/order/auth/${page}/${limit}`,
+        method:'get'
+    })
+}

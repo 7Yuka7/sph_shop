@@ -4,7 +4,7 @@
         <!-- 当前页是1就不可以进行点击 -->
       <button :disabled="pageNo === 1" @click="$emit('getPage',pageNo-1)">上一页</button>
       <!-- 在中间部分能够完整执行12345的时候并不需要 -->
-      <button v-if="startNumAndEndNum.start>1"  @click="$emit('getPage',1)">1</button>
+      <button v-if="startNumAndEndNum.start>1"  @click="$emit('getPage',1)" :class="{active:pageNo === 1}">1</button>
       <button v-if="startNumAndEndNum.start>2">···</button>
 
         <!-- 中,优化：外面套template执行v-for，里面再使用v-if --[里面的n就是页码]-->
@@ -13,7 +13,7 @@
         <!-- 下 -->
         <!-- 同理，在末尾部分能够完整的执行一整串的时候不显示 -->
       <button v-if="startNumAndEndNum.end<totalPage-1" >···</button>
-      <button v-if="startNumAndEndNum.end<=totalPage-1"  @click="$emit('getPage',totalPage)">{{totalPage}}</button>
+      <button v-if="startNumAndEndNum.end<=totalPage-1"  @click="$emit('getPage',totalPage)" :class="{active:pageNo === totalPage}">{{totalPage}}</button>
       <!-- 当前已经处于末页的时候不可点击 -->
       <button :disabled="pageNo === totalPage" @click="$emit('getPage',pageNo+1)">下一页</button>
       
