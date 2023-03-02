@@ -27,6 +27,15 @@ import 'swiper/css/swiper.css'
 //引入饿了么组件，并使用存储在原型对象中
 import {MessageBox} from 'element-ui'
 
+//引入图片懒加载-并设置插件
+// import VueLazyload from 'vue-lazyload'
+// Vue.use(VueLazyload,{
+//   loading: '@/assets/loading.gif',
+// })
+
+//引入表单验证
+import '@/plugins/validate'
+
 Vue.config.productionTip = false
 
 //引入接口，并挂载到Vue原型对象上
