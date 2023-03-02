@@ -40,16 +40,34 @@ export default [
         path:'/paysuccess',
         component:PaySuccess,
         meta:{showFooter:true}
+        //使用组件路由守卫判断
     },
     {
         path:'/pay',
         component:Pay,
-        meta:{showFooter:true}
+        meta:{showFooter:true},
+        //pay页面只能从trade页面进入
+        beforeEnter: (to, from, next) => {
+            if(from.path === '/trade'){
+                next()
+            }else{
+                next(false)
+            }
+        }
     },
     {
         path:'/trade',
         component:Trade,
-        meta:{showFooter:true}
+        meta:{showFooter:true},
+        //trade页面只能从shopcart页面进入
+        beforeEnter: (to, from, next) => {
+            if(from.path === '/shopcart'){
+                next()
+            }else{
+                // 从哪里来回哪里去
+                next(false)
+            }
+        }
     },
     {
         path:'/shopcart',

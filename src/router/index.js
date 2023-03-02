@@ -81,7 +81,14 @@ router.beforeEach(async (to,from,next)=>{
         }
     }else{
         // 进入此处说明未登录 -- 游客身份
-        next()
+        //游客无法转跳交易/支付/个人中心
+        if(to.path.indexOf('/trade') !==-1 || to.path.indexOf('/pay') !==-1 || to.path.indexOf('/center') !==-1){
+            // 直接转去登录界面
+            next('/login?redirect='+to.path)
+        }else{
+            //其余地方直接放行
+            next()
+        }
     }
 })
 

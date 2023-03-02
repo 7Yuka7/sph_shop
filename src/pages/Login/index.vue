@@ -81,8 +81,10 @@
         try {
           //首先进行简单判断
           (this.phone&&this.password) && await this.$store.dispatch('registerAndLogin/Login',{phone:this.phone,password:this.password})
-          //登陆成功就转跳到home
-          this.$router.push('/home')
+          //登陆成功就转跳到home--需要判断用户本来想去的路由
+          let toPath = this.$route.query.redirect || '/home'
+          this.$router.push(toPath)
+          
         } catch (error) {
           alert(error.message)
         }

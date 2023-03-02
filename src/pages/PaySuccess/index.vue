@@ -20,6 +20,20 @@
 <script>
   export default {
     name: 'PaySuccess',
+    //组件路由守卫配置
+    beforeRouteEnter(to, from, next){
+      if(from.path === '/pay'){
+        next()
+      }else{
+        next(false)
+      }
+    },
+    beforeRouteUpdate(to, from, next){
+      next()
+    },
+    beforeRouteLeave (to, from, next) {
+      next()
+    }
   }
 </script>
 
