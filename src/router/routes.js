@@ -9,9 +9,33 @@ import ShopCart from '@/pages/ShopCart'
 import Trade from '@/pages/Trade'
 import Pay from '@/pages/Pay'
 import PaySuccess from '@/pages/PaySuccess'
+import Center from '@/pages/Center'
+//二级组件引入
+import SingleOrder from '@/pages/Center/SingleOrder'
+import GroupOrder from '@/pages/Center/GroupOrder'
 
 
 export default [
+    {
+        path:'/center',
+        component:Center,
+        meta:{showFooter:true},
+        children:[
+            {
+                path:'singleorder',
+                component:SingleOrder
+            },
+            {
+                path:'grouporder',
+                component:GroupOrder
+            },
+            // 默认转跳
+            {
+                path:'/center',
+                redirect:'/center/singleorder'
+            }
+        ]
+    },
     {
         path:'/paysuccess',
         component:PaySuccess,
