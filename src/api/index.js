@@ -140,3 +140,36 @@ export const reqTradeInfo = () => {
         method:'get'
     })
 }
+
+//提交订单接口
+export const reqSubmitOrder = (tradeNo,data) => {
+    return requests({
+        url:`/order/auth/submitOrder?tradeNo=${tradeNo}`,
+        method:'post',
+        data
+    })
+}
+
+//查询订单结果接口
+export const reqOrderInfo = (orderId) => {
+    return requests({
+        url:`/payment/weixin/createNative/${orderId}`,
+        method:'get'
+    })
+}
+
+//查询订单支付状态
+//远程服务器
+// export const reqPaymentStatus = (orderId) => {
+//     return requests({
+//         url:`/payment/weixin/queryPayStatus/${orderId}`,
+//         method:'get'
+//     })
+// }
+//本地服务器
+export const reqPaymentStatus = (orderId) => {
+    return mockRequests({
+        url:`/payment/weixin/queryPayStatus`,
+        method:'get'
+    })
+}

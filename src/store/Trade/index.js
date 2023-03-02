@@ -6,7 +6,7 @@ export default {
         //获取用户地址
         async getAddressInfo({commit},value){
             let result = await reqAddressInfo()
-            // console.log(result)
+            console.log(result)
             if(result.code === 200){
                 commit('GETADDRESSINFO',result.data)
                 return 'ok'
@@ -18,7 +18,7 @@ export default {
         //获取订单交易页信息
         async getTradeInfo({commit},value){
             let result = await reqTradeInfo()
-            // console.log(result)
+            console.log(result)
             if(result.code === 200){
                 commit('GETTRADEINFO',result.data)
                 return 'ok'

@@ -24,20 +24,28 @@ import '@/mock/MockServer.js'
 //引入轮播图需要的css
 import 'swiper/css/swiper.css'
 
+//引入饿了么组件，并使用存储在原型对象中
+import {MessageBox} from 'element-ui'
+
 Vue.config.productionTip = false
 
-// //发送ajax请求测试：
-// import {reqCategoryList} from '@/api'
-// reqCategoryList()
+//引入接口，并挂载到Vue原型对象上
+import * as API from '@/api'
 
 new Vue({
   render: h => h(App),
-  //全局事件总线
+  //全局事件总线--以及axios接口请求挂载
   beforeCreate(){
+    //全局事件总线
     Vue.prototype.$bus = this
+    //路由接口
+    Vue.prototype.$API = API
+    //饿了么组件
+    Vue.prototype.$msgbox = MessageBox;
+    Vue.prototype.$alert = MessageBox.alert;
   },
   //挂载路由
   router,
   //挂载仓库
-  store
+  store,
 }).$mount('#app')

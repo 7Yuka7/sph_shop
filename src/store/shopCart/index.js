@@ -77,7 +77,7 @@ export default {
     getters:{
         //这个数据结构恶心死了
         cartList(state){
-            return state.cartList[0]
+            return state.cartList[0] || {}
         },
         // cartInfoList(state){
         //     return state
